@@ -5,7 +5,8 @@ const validateRequest = require('middleware/validate-request');
 const authorize = require('middleware/authorize')
 const userService = require('./user.service');
 
-// routes
+// application routes
+
 router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
 router.get('/', authorize(), getAll);
@@ -16,6 +17,20 @@ router.delete('/:id', authorize(), _delete);
 
 module.exports = router;
 
+/**
+ * 
+ * Following CRUD function take request body and pass them to their relative function in the user service file
+ * to perform their related functions
+ */
+
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * defines the authentication route schema and validates the request with defined schema 
+ */
+
 function authenticateSchema(req, res, next) {
     const schema = Joi.object({
         username: Joi.string().required(),
@@ -24,11 +39,27 @@ function authenticateSchema(req, res, next) {
     validateRequest(req, next, schema);
 }
 
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * authenticates the user
+ */
+
 function authenticate(req, res, next) {
     userService.authenticate(req.body)
         .then(user => res.json(user))
         .catch(next);
 }
+
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * defines user registration schema and validates the request according to defined schema
+ */
 
 function registerSchema(req, res, next) {
     const schema = Joi.object({
@@ -40,11 +71,27 @@ function registerSchema(req, res, next) {
     validateRequest(req, next, schema);
 }
 
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * registers the user 
+ */
+
 function register(req, res, next) {
     userService.create(req.body)
         .then(() => res.json({ message: 'Registration successful' }))
         .catch(next);
 }
+
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * gets all users
+ */
 
 function getAll(req, res, next) {
     userService.getAll()
@@ -52,15 +99,39 @@ function getAll(req, res, next) {
         .catch(next);
 }
 
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * gets the details of current user
+ */
+
 function getCurrent(req, res, next) {
     res.json(req.user);
 }
+
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * gets the user by its ID
+ */
 
 function getById(req, res, next) {
     userService.getById(req.params.id)
         .then(user => res.json(user))
         .catch(next);
 }
+
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * defines the user update schema and validates the request
+ */
 
 function updateSchema(req, res, next) {
     const schema = Joi.object({
@@ -72,11 +143,27 @@ function updateSchema(req, res, next) {
     validateRequest(req, next, schema);
 }
 
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * updates the user
+ */
+
 function update(req, res, next) {
     userService.update(req.params.id, req.body)
         .then(user => res.json(user))
         .catch(next);
 }
+
+/**
+ * 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * deletes the user from the database
+ */
 
 function _delete(req, res, next) {
     userService.delete(req.params.id)

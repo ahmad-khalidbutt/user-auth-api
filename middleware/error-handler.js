@@ -1,5 +1,15 @@
 module.exports = errorHandler;
 
+/**
+ * 
+ * @param {string} err 
+ * @param {object} req 
+ * @param {object} res 
+ * @param {function} next
+ * handles error on basis of its type
+ * @returns response object with error message 
+ */
+
 function errorHandler(err, req, res, next) {
     switch (true) {
         case typeof err === 'string':

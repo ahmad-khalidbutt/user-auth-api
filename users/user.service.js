@@ -12,6 +12,13 @@ module.exports = {
     delete: _delete
 };
 
+/**
+ * 
+ * @param {object} credentials
+ * authenticate the user
+ * @returns object with user details and hash token 
+ */
+
 async function authenticate({ username, password }) {
     const user = await db.User.scope('withHash').findOne({ where: { username } });
 
@@ -23,13 +30,30 @@ async function authenticate({ username, password }) {
     return { ...omitHash(user.get()), token };
 }
 
+/**
+ * get all users
+ */
+
 async function getAll() {
     return await db.User.findAll();
 }
 
+/**
+ * 
+ * @param {string} id
+ * find the user by its ID 
+ */
+
 async function getById(id) {
     return await getUser(id);
 }
+
+/**
+ * 
+ * @param {object} params | username | password
+ * creates a user in the database with hash
+ * throws error if the username is already taken 
+ */
 
 async function create(params) {
     // validate
@@ -46,13 +70,20 @@ async function create(params) {
     await db.User.create(params);
 }
 
+/**
+ * 
+ * @param {string} id 
+ * @param {object} params | username | password
+ * updates the user
+ */
+
 async function update(id, params) {
     const user = await getUser(id);
 
     // validate
     const usernameChanged = params.username && user.username !== params.username;
     if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
-        throw 'Username "' + params.username + '" is already taken';
+        throw `Username ${params.username} is already taken`;
     }
 
     // hash password if it was entered
@@ -66,6 +97,12 @@ async function update(id, params) {
 
     return omitHash(user.get());
 }
+
+/**
+ * 
+ * @param {string} id | userid
+ * deletes the user from the database
+ */
 
 async function _delete(id) {
     const user = await getUser(id);

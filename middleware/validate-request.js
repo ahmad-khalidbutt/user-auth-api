@@ -1,5 +1,13 @@
 module.exports = validateRequest;
 
+/**
+ * 
+ * @param {object} req 
+ * @param {function} next 
+ * @param {object} schema
+ * validates the request body according to the defined schema
+ * throws error if not validated 
+ */
 function validateRequest(req, next, schema) {
   const options = {
     abortEarly: false, // include all errors

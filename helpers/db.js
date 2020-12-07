@@ -6,6 +6,10 @@ module.exports = db = {};
 
 initialize();
 
+/**
+ * Create Database if does not exist with configuration in config file
+ */
+
 async function initialize() {
   // create database if it does not exists
   const { host, port, user, password, database } = config.database;

@@ -2,6 +2,12 @@ const { DataTypes } = require('sequelize');
 
 module.exports = model;
 
+/**
+ * 
+ * @param {object} sequelize
+ * defines the model for the user table 
+ */
+
 function model(sequelize) {
     const attributes = {
         firstName: { type: DataTypes.STRING, allowNull: false },
